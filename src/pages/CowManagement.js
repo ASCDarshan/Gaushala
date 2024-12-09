@@ -1,13 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { AgGridReact } from 'ag-grid-react';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import AddCowModal from '../componenets/AddCowModal';
-
-
-
-
+import React, { useState, useEffect, useCallback } from "react";
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import AddCowModal from "../componenets/AddCow/AddCowModal";
 
 const CowManagement = () => {
   const [rowData, setRowData] = useState([]);
@@ -16,180 +12,184 @@ const CowManagement = () => {
   const [totalCows, setTotalCows] = useState(0);
   const [pageSize] = useState(25);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Complete column definitions with all fields
   const columnDefs = [
-    { 
-      field: 'tag_number', 
-      headerName: 'Tag Number',
+    {
+      field: "tag_number",
+      headerName: "Tag Number",
       sortable: true,
       filter: true,
-      pinned: 'left',
+      pinned: "left",
       width: 120,
-      cellClass: 'font-medium'
+      cellClass: "font-medium",
     },
-    { 
-      field: 'name', 
-      headerName: 'Name',
+    {
+      field: "name",
+      headerName: "Name",
       sortable: true,
       filter: true,
-      width: 120
+      width: 120,
     },
-    { 
-      field: 'registration_number',
-      headerName: 'Registration No.',
+    {
+      field: "registration_number",
+      headerName: "Registration No.",
       sortable: true,
       filter: true,
-      width: 140
+      width: 140,
     },
-    { 
-      field: 'status',
-      headerName: 'Status',
+    {
+      field: "status",
+      headerName: "Status",
       sortable: true,
       filter: true,
       width: 120,
       cellRenderer: (params) => (
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-          params.value === 'healthy' ? 'bg-green-100 text-green-800' :
-          params.value === 'sick' ? 'bg-red-100 text-red-800' :
-          'bg-yellow-100 text-yellow-800'
-        }`}>
+        <span
+          className={`px-2 py-1 rounded-full text-xs font-medium ${
+            params.value === "healthy"
+              ? "bg-green-100 text-green-800"
+              : params.value === "sick"
+              ? "bg-red-100 text-red-800"
+              : "bg-yellow-100 text-yellow-800"
+          }`}
+        >
           {params.value?.charAt(0).toUpperCase() + params.value?.slice(1)}
         </span>
-      )
+      ),
     },
-    { 
-      field: 'gender',
-      headerName: 'Gender',
+    {
+      field: "gender",
+      headerName: "Gender",
       sortable: true,
       filter: true,
       width: 100,
-      valueFormatter: (params) => params.value === 'F' ? 'Female' : 'Male'
-    },
-    { 
-      field: 'breed',
-      headerName: 'Breed',
-      sortable: true,
-      filter: true,
-      width: 120
-    },
-    { 
-      field: 'color',
-      headerName: 'Color',
-      sortable: true,
-      filter: true,
-      width: 100
-    },
-    { 
-      field: 'weight',
-      headerName: 'Weight (kg)',
-      sortable: true,
-      filter: true,
-      width: 120,
-      valueFormatter: (params) => params.value ? `${params.value} kg` : ''
-    },
-    { 
-      field: 'date_of_birth',
-      headerName: 'Date of Birth',
-      sortable: true,
-      filter: true,
-      width: 130,
-      valueFormatter: (params) => 
-        params.value ? new Date(params.value).toLocaleDateString() : ''
-    },
-    { 
-      field: 'acquisition_type',
-      headerName: 'Acquisition',
-      sortable: true,
-      filter: true,
-      width: 120,
-      valueFormatter: (params) => 
-        params.value?.charAt(0).toUpperCase() + params.value?.slice(1)
-    },
-    { 
-      field: 'purchase_date',
-      headerName: 'Purchase Date',
-      sortable: true,
-      filter: true,
-      width: 130,
-      valueFormatter: (params) => 
-        params.value ? new Date(params.value).toLocaleDateString() : ''
-    },
-    { 
-      field: 'date_entered_gaushala',
-      headerName: 'Entry Date',
-      sortable: true,
-      filter: true,
-      width: 130,
-      valueFormatter: (params) => 
-        params.value ? new Date(params.value).toLocaleDateString() : ''
-    },
-    { 
-      field: 'shed_number',
-      headerName: 'Shed',
-      sortable: true,
-      filter: true,
-      width: 100
-    },
-    { 
-      field: 'block_number',
-      headerName: 'Block',
-      sortable: true,
-      filter: true,
-      width: 100
+      valueFormatter: (params) => (params.value === "F" ? "Female" : "Male"),
     },
     {
-      field: 'vaccination_count',
-      headerName: 'Vaccinations',
+      field: "breed",
+      headerName: "Breed",
       sortable: true,
+      filter: true,
       width: 120,
-      type: 'numericColumn'
     },
     {
-      field: 'medical_record_count',
-      headerName: 'Medical Records',
+      field: "color",
+      headerName: "Color",
+      sortable: true,
+      filter: true,
+      width: 100,
+    },
+    {
+      field: "weight",
+      headerName: "Weight (kg)",
+      sortable: true,
+      filter: true,
+      width: 120,
+      valueFormatter: (params) => (params.value ? `${params.value} kg` : ""),
+    },
+    {
+      field: "date_of_birth",
+      headerName: "Date of Birth",
+      sortable: true,
+      filter: true,
+      width: 130,
+      valueFormatter: (params) =>
+        params.value ? new Date(params.value).toLocaleDateString() : "",
+    },
+    {
+      field: "acquisition_type",
+      headerName: "Acquisition",
+      sortable: true,
+      filter: true,
+      width: 120,
+      valueFormatter: (params) =>
+        params.value?.charAt(0).toUpperCase() + params.value?.slice(1),
+    },
+    {
+      field: "purchase_date",
+      headerName: "Purchase Date",
+      sortable: true,
+      filter: true,
+      width: 130,
+      valueFormatter: (params) =>
+        params.value ? new Date(params.value).toLocaleDateString() : "",
+    },
+    {
+      field: "date_entered_gaushala",
+      headerName: "Entry Date",
+      sortable: true,
+      filter: true,
+      width: 130,
+      valueFormatter: (params) =>
+        params.value ? new Date(params.value).toLocaleDateString() : "",
+    },
+    {
+      field: "shed_number",
+      headerName: "Shed",
+      sortable: true,
+      filter: true,
+      width: 100,
+    },
+    {
+      field: "block_number",
+      headerName: "Block",
+      sortable: true,
+      filter: true,
+      width: 100,
+    },
+    {
+      field: "vaccination_count",
+      headerName: "Vaccinations",
+      sortable: true,
+      width: 120,
+      type: "numericColumn",
+    },
+    {
+      field: "medical_record_count",
+      headerName: "Medical Records",
       sortable: true,
       width: 140,
-      type: 'numericColumn'
+      type: "numericColumn",
     },
     {
-      field: 'pregnancy_count',
-      headerName: 'Pregnancies',
+      field: "pregnancy_count",
+      headerName: "Pregnancies",
       sortable: true,
       width: 120,
-      type: 'numericColumn'
+      type: "numericColumn",
     },
     {
-      headerName: 'Actions',
-      pinned: 'right',
+      headerName: "Actions",
+      pinned: "right",
       sortable: false,
       filter: false,
       width: 120,
       cellRenderer: (params) => (
         <div className="flex gap-2">
-          <button 
+          <button
             onClick={() => handleEdit(params.data)}
             className="px-3 py-1 text-xs bg-cornflower text-white rounded hover:bg-cornflower-dark"
           >
             Edit
           </button>
-          <button 
+          <button
             onClick={() => handleView(params.data)}
             className="px-3 py-1 text-xs bg-gray-500 text-white rounded hover:bg-gray-600"
           >
             View
           </button>
         </div>
-      )
-    }
+      ),
+    },
   ];
-   
+
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const fetchCows = useCallback(async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       let url = `https://gocrm.one/gaushala/api/cow_management/cows/?page=${currentPage}&page_size=${pageSize}`;
       if (searchQuery) {
         url += `&search=${encodeURIComponent(searchQuery)}`;
@@ -197,19 +197,19 @@ const CowManagement = () => {
 
       const response = await fetch(url, {
         headers: {
-          'Authorization': `Token ${token}`
-        }
+          Authorization: `Token ${token}`,
+        },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch cows');
+        throw new Error("Failed to fetch cows");
       }
 
       const data = await response.json();
       setRowData(data.results);
       setTotalCows(data.count);
     } catch (err) {
-      console.error('Error fetching cows:', err);
+      console.error("Error fetching cows:", err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -221,11 +221,11 @@ const CowManagement = () => {
   }, [fetchCows]);
 
   const handleEdit = (cow) => {
-    console.log('Edit cow:', cow);
+    console.log("Edit cow:", cow);
   };
 
   const handleView = (cow) => {
-    console.log('View cow:', cow);
+    console.log("View cow:", cow);
   };
 
   const handleSearch = (e) => {
@@ -256,7 +256,7 @@ const CowManagement = () => {
               />
               <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
             </div>
-            <button 
+            <button
               type="submit"
               className="px-4 py-2 bg-cornflower text-white rounded-lg hover:bg-cornflower-dark"
             >
@@ -265,13 +265,13 @@ const CowManagement = () => {
           </form>
 
           <div className="flex gap-2">
-          <button 
-  className="px-4 py-2 bg-cornflower text-white rounded-lg hover:bg-cornflower-dark"
-  onClick={() => setIsAddModalOpen(true)}
->
-  Add New Cow
-</button>
-            <button 
+            <button
+              className="px-4 py-2 bg-cornflower text-white rounded-lg hover:bg-cornflower-dark"
+              onClick={() => setIsAddModalOpen(true)}
+            >
+              Add New Cow
+            </button>
+            <button
               className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
               onClick={() => fetchCows()}
             >
@@ -282,15 +282,13 @@ const CowManagement = () => {
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 text-red-700 rounded-lg">
-          {error}
-        </div>
+        <div className="p-4 bg-red-50 text-red-700 rounded-lg">{error}</div>
       )}
 
       <div className="bg-white rounded-lg shadow">
-        <div 
+        <div
           className="ag-theme-alpine w-full"
-          style={{ height: 'calc(100vh - 300px)', minHeight: '500px' }}
+          style={{ height: "calc(100vh - 300px)", minHeight: "500px" }}
         >
           <AgGridReact
             rowData={rowData}
@@ -299,7 +297,7 @@ const CowManagement = () => {
               resizable: true,
               sortable: true,
               filter: true,
-              floatingFilter: true
+              floatingFilter: true,
             }}
             enableCellTextSelection={true}
             animateRows={true}
@@ -312,7 +310,7 @@ const CowManagement = () => {
               </div>
             )}
             loadingOverlayComponentParams={{
-              loadingMessage: 'Loading cows...'
+              loadingMessage: "Loading cows...",
             }}
             overlayLoadingTemplate={
               '<span class="ag-overlay-loading-center">Loading...</span>'
@@ -326,13 +324,14 @@ const CowManagement = () => {
         <div className="p-4 border-t border-gray-200">
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-600">
-              Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, totalCows)} of {totalCows} cows
+              Showing {(currentPage - 1) * pageSize + 1} to{" "}
+              {Math.min(currentPage * pageSize, totalCows)} of {totalCows} cows
             </span>
             <div className="flex items-center gap-2">
               <button
                 className="px-4 py-2 text-sm bg-gray-100 rounded-lg disabled:opacity-50 hover:bg-gray-200"
                 disabled={currentPage === 1}
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
               >
                 Previous
               </button>
@@ -342,7 +341,9 @@ const CowManagement = () => {
               <button
                 className="px-4 py-2 text-sm bg-gray-100 rounded-lg disabled:opacity-50 hover:bg-gray-200"
                 disabled={currentPage >= totalPages}
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
               >
                 Next
               </button>
@@ -351,10 +352,10 @@ const CowManagement = () => {
         </div>
       </div>
       <AddCowModal
-  isOpen={isAddModalOpen}
-  onClose={() => setIsAddModalOpen(false)}
-  fetchCows={fetchCows}
-/>
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        fetchCows={fetchCows}
+      />
     </div>
   );
 };
