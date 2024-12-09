@@ -45,16 +45,17 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
     pasture_area: "",
     shed_number: "",
 
-    date_entered_gaushala: "",
-    status: "healthy",
+    status: "",
     notes: "",
-    block_number: "",
     last_vaccination_date: "",
     next_vaccination_due: "",
     last_medical_checkup: "",
     medical_notes: "",
-    is_pregnant: false,
+
+    date_entered_gaushala: "",
+    block_number: "",
     last_breeding_date: "",
+    is_pregnant: false,
     breeding_notes: "",
     image: null,
   });
@@ -365,12 +366,177 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
 
   const renderHealthDetails = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {/* Health fields */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Status <span className="text-red-500">*</span>
+        </label>
+        <select
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
+        >
+          <option value="healthy">Healthy</option>
+          <option value="sick">Sick</option>
+          <option value="pragnant">Pregnant</option>
+          <option value="lacatating">Lactating</option>
+          <option value="dry">Dry</option>
+          <option value="sold">Sold</option>
+          <option value="deceased">Deceased</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Notes
+        </label>
+        <input
+          type="text"
+          name="notes"
+          value={formData.notes}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Last Vaccination Date
+        </label>
+        <input
+          type="date"
+          name="last_vaccination_date"
+          value={formData.last_vaccination_date}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Next Vaccination Date
+        </label>
+        <input
+          type="date"
+          name="next_vaccination_due"
+          value={formData.next_vaccination_due}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Last medical checkup
+        </label>
+        <input
+          type="date"
+          name="last_medical_checkup"
+          value={formData.last_medical_checkup}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Medical Notes
+        </label>
+        <input
+          type="text"
+          name="medical_notes"
+          value={formData.medical_notes}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
+        />
+      </div>
     </div>
   );
 
   const renderAdditionalDetails = () => (
-    <div className="grid grid-cols-1 gap-6">{/* Additional fields */}</div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Date Entered Gaushala
+        </label>
+        <input
+          type="date"
+          name="date_entered_gaushala"
+          value={formData.date_entered_gaushala}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Block Number
+        </label>
+        <input
+          type="number"
+          name="block_number"
+          value={formData.block_number}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Last Breeding Date
+        </label>
+        <input
+          type="date"
+          name="last_breeding_date"
+          value={formData.last_breeding_date}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Breeding Notes
+        </label>
+        <input
+          type="text"
+          name="breeding_notes"
+          value={formData.breeding_notes}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Image
+        </label>
+        <input
+          type="file"
+          name="image"
+          value={formData.image}
+          onChange={handleChange}
+          className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Pregnant
+        </label>
+        <input
+          type="checkbox"
+          name="is_pregnant"
+          checked={formData.is_pregnant}
+          onChange={(e) =>
+            handleChange({
+              target: { name: e.target.name, value: e.target.checked },
+            })
+          }
+          className="rounded border-gray-300 text-blue-500 focus:ring-blue-500 transition duration-150"
+        />
+      </div>
+    </div>
   );
 
   const renderStepContent = () => {
