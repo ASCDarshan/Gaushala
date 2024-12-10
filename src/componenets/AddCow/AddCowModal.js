@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { toast } from "react-toastify";
+import ajaxCall from "../helpers/ajaxCall";
 
 const STEPS = [
   {
@@ -25,11 +27,14 @@ const STEPS = [
 ];
 
 const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
+  const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
   const [currentStep, setCurrentStep] = useState(1);
+  const [parentageData, setParentageData] = useState([]);
+  console.log(parentageData);
   const [formData, setFormData] = useState({
     name: "",
     tag_number: "",
-    gender: "F",
+    gender: "",
     breed: "",
     color: "",
     date_of_birth: "",
@@ -41,7 +46,7 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
     purchase_price: "",
     mother: null,
     father: null,
-    acquisition_type: "donated",
+    acquisition_type: "",
     pasture_area: "",
     shed_number: "",
 
@@ -60,12 +65,109 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
     image: null,
   });
 
+  const fetchparentageData = async (url, setData) => {
+    try {
+      const response = await ajaxCall(
+        url,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${loginInfo?.accessToken?.access}`,
+          },
+          method: "GET",
+        },
+        8000
+      );
+      if (response?.status === 200) {
+        setData(response?.data?.results || []);
+        return response.data;
+      } else {
+        console.error("Fetch error:", response);
+        return null;
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    fetchparentageData("cow_management/cows/", setParentageData);
+  }, []);
+
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type, checked, files } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "file" ? files : type === "checkbox" ? checked : value,
     }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formDataSend = new FormData();
+
+    formDataSend.append("name", formData.name);
+    formDataSend.append("tag_number", formData.tag_number);
+    formDataSend.append("gender", formData.gender);
+    formDataSend.append("breed", formData.breed);
+    formDataSend.append("color", formData.color);
+    formDataSend.append("date_of_birth", formData.date_of_birth);
+    formDataSend.append("rfid_tag", formData.rfid_tag);
+    formDataSend.append("weight", formData.weight);
+    formDataSend.append("registration_number", formData.registration_number);
+    formDataSend.append("purchase_date", formData.purchase_date);
+    formDataSend.append("purchase_price", formData.purchase_price);
+    formDataSend.append("mother", formData.mother);
+    formDataSend.append("father", formData.father);
+    formDataSend.append("acquisition_type", formData.acquisition_type);
+    formDataSend.append("pasture_area", formData.pasture_area);
+    formDataSend.append("shed_number", formData.shed_number);
+    formDataSend.append("status", formData.status);
+    formDataSend.append("notes", formData.notes);
+    formDataSend.append(
+      "last_vaccination_date",
+      formData.last_vaccination_date
+    );
+    formDataSend.append("next_vaccination_due", formData.next_vaccination_due);
+    formDataSend.append("last_medical_checkup", formData.last_medical_checkup);
+    formDataSend.append("medical_notes", formData.medical_notes);
+    formDataSend.append(
+      "date_entered_gaushala",
+      formData.date_entered_gaushala
+    );
+    formDataSend.append("block_number", formData.block_number);
+    formDataSend.append("last_breeding_date", formData.last_breeding_date);
+    formDataSend.append("is_pregnant", formData.is_pregnant);
+    formDataSend.append("breeding_notes", formData.breeding_notes);
+    formDataSend.append("image", formData.image);
+
+    try {
+      const response = await ajaxCall(
+        "cow_management/cows/",
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${loginInfo?.accessToken?.access}`,
+          },
+          method: "POST",
+          body: formDataSend,
+        },
+        8000
+      );
+      if ([200, 201].includes(response.status)) {
+        toast.success("Post Created Successfully");
+      } else if (response?.status === 400) {
+        const errorMessage = await response.json();
+        toast.error(errorMessage?.detail || "Please Add Content");
+      } else {
+        toast.error("Some Problem Occurred. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Some Problem Occurred. Please try again.");
+    }
   };
 
   const renderStepIndicator = () => (
@@ -170,11 +272,10 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
         </label>
         <select
           name="gender"
-          required
-          value={formData.gender}
           onChange={handleChange}
           className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
         >
+          <option value="">select gender</option>
           <option value="F">Female</option>
           <option value="M">Male</option>
         </select>
@@ -262,7 +363,7 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
           value={formData.registration_number}
           onChange={handleChange}
           className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
-          placeholder="Enter cow's name"
+          placeholder="Enter Registration Number"
         />
       </div>
 
@@ -276,7 +377,6 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
           value={formData.purchase_date}
           onChange={handleChange}
           className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
-          placeholder="Enter tag number"
         />
       </div>
 
@@ -290,7 +390,7 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
           value={formData.purchase_price}
           onChange={handleChange}
           className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
-          placeholder="Enter tag number"
+          placeholder="Enter Purchase Price"
         />
       </div>
 
@@ -305,6 +405,7 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
           onChange={handleChange}
           className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
         >
+          <option value="">select acquisition type</option>
           <option value="bought">Bought</option>
           <option value="donated">Donated</option>
           <option value="born_in_gaushala">Born in Gaushala</option>
@@ -315,25 +416,36 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Mother
         </label>
-        <input
-          type="text"
+        <select
           name="mother"
           value={formData.mother}
           onChange={handleChange}
           className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
-        />
+        >
+          {parentageData.map((cow) => (
+            <option key={cow.id} value={cow.id}>
+              {cow.name}
+            </option>
+          ))}
+        </select>
       </div>
+
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Father
         </label>
-        <input
-          type="text"
+        <select
           name="father"
           value={formData.father}
           onChange={handleChange}
           className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
-        />
+        >
+          {parentageData.map((cow) => (
+            <option key={cow.id} value={cow.id}>
+              {cow.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>
@@ -372,10 +484,10 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
         </label>
         <select
           name="status"
-          value={formData.status}
           onChange={handleChange}
           className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
         >
+          <option value="">select status</option>
           <option value="healthy">Healthy</option>
           <option value="sick">Sick</option>
           <option value="pragnant">Pregnant</option>
@@ -514,8 +626,10 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
         <input
           type="file"
           name="image"
-          value={formData.image}
-          onChange={handleChange}
+          accept="image/*"
+          onChange={(e) =>
+            setFormData({ ...formData, image: e.target.files[0] })
+          }
           className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
         />
       </div>
@@ -608,7 +722,7 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
                 <button
                   type="button"
                   onClick={
-                    currentStep === STEPS.length ? undefined : handleNext
+                    currentStep === STEPS.length ? handleSubmit : handleNext
                   }
                   className="px-6 py-3 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
