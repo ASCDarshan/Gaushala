@@ -14,6 +14,8 @@ import ajaxCall from "../componenets/helpers/ajaxCall";
 const DashboardContent = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [cowsData, setCowsData] = useState([]);
+  const [milkProductionData, setMilkProductionData] = useState([]);
+  const [medicalData, setmedicalRecordsData] = useState([]);
   const [dashboardStats, setDashboardStats] = useState({
     totalCows: 0,
     milkProduction: 0,
@@ -24,75 +26,8 @@ const DashboardContent = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
   const navigate = useNavigate();
-
-  // Fetch dashboard statistics
-  const fetchDashboardStats = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      // Fetch cows data
-      const cowsResponse = await fetch(
-        "https://gocrm.one/gaushala/api/cow_management/cows/",
-        {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        }
-      );
-      const cowsData = await cowsResponse.json();
-
-      // Fetch milk production data
-      const milkResponse = await fetch(
-        "https://gocrm.one/gaushala/api/cow_management/milk-productions/",
-        {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        }
-      );
-      const milkData = await milkResponse.json();
-
-      // Fetch medical records
-      const medicalResponse = await fetch(
-        "https://gocrm.one/gaushala/api/cow_management/medical-records/",
-        {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        }
-      );
-      const medicalData = await medicalResponse.json();
-
-      // Calculate statistics
-      const stats = {
-        totalCows: cowsData.count || 0,
-        milkProduction:
-          milkData.results?.reduce(
-            (total, record) => total + Number(record.quantity),
-            0
-          ) || 0,
-        activeMedicalCases:
-          medicalData.results?.filter((record) => record.status === "active")
-            .length || 0,
-        healthyCows:
-          cowsData.results?.filter((cow) => cow.status === "healthy").length ||
-          0,
-        pregnantCows:
-          cowsData.results?.filter((cow) => cow.is_pregnant).length || 0,
-        upcomingVaccinations:
-          cowsData.results?.filter((cow) => cow.next_vaccination_due).length ||
-          0,
-      };
-
-      setDashboardStats(stats);
-      setLoading(false);
-    } catch (err) {
-      console.error("Error fetching dashboard data:", err);
-      setError("Failed to load dashboard data");
-      setLoading(false);
-    }
-  };
 
   const fetchData = async (url, setData) => {
     try {
@@ -110,20 +45,72 @@ const DashboardContent = () => {
       );
       if (response?.status === 200) {
         setData(response?.data || []);
+        return response.data;
       } else {
         console.error("Fetch error:", response);
+        return null;
       }
     } catch (error) {
       console.error("Network error:", error);
+      return null;
     }
   };
 
-  useEffect(() => {
-    fetchData("cow_management/cows/", setCowsData);
-    setLoading(false);
-  }, []);
+  const fetchDashboardStats = async () => {
+    try {
+      setRefreshing(true);
+      const cowsDataResponse = await fetchData(
+        "cow_management/cows/",
+        setCowsData
+      );
+      const milkProductionResponse = await fetchData(
+        "cow_management/milk-productions/",
+        setMilkProductionData
+      );
+      const medicalRecordsResponse = await fetchData(
+        "cow_management/medical-records/",
+        setmedicalRecordsData
+      );
 
-  console.log(cowsData);
+      if (
+        cowsDataResponse &&
+        milkProductionResponse &&
+        medicalRecordsResponse
+      ) {
+        const stats = {
+          totalCows: cowsDataResponse.count || 0,
+          milkProduction:
+            milkProductionResponse?.results?.reduce(
+              (total, record) => total + Number(record.quantity),
+              0
+            ) || 0,
+          activeMedicalCases:
+            medicalRecordsResponse?.results?.filter(
+              (record) => record.status === "active"
+            ).length || 0,
+          healthyCows:
+            cowsDataResponse?.results?.filter((cow) => cow.status === "healthy")
+              .length || 0,
+          pregnantCows:
+            cowsDataResponse?.results?.filter((cow) => cow.is_pregnant)
+              .length || 0,
+          upcomingVaccinations:
+            cowsDataResponse?.results?.filter((cow) => cow.next_vaccination_due)
+              .length || 0,
+        };
+
+        setDashboardStats(stats);
+        setLoading(false);
+      } else {
+        setError("Failed to fetch dashboard data");
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      setError("An error occurred while refreshing data");
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     fetchDashboardStats();
@@ -132,21 +119,21 @@ const DashboardContent = () => {
     return () => clearInterval(interval);
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen">
+  //       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+  //     </div>
+  //   );
+  // }
 
-  if (error) {
-    return (
-      <div className="p-6 text-center">
-        <div className="bg-error-50 text-error-500 p-4 rounded-lg">{error}</div>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="p-6 text-center">
+  //       <div className="bg-error-50 text-error-500 p-4 rounded-lg">{error}</div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="p-6 space-y-6">

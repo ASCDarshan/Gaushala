@@ -36,16 +36,12 @@ const Login = () => {
         localStorage.setItem(
           "loginInfo",
           JSON.stringify({
-            accessToken: result?.access,
-            refreshToken: result?.refresh,
-            userId: result?.userId,
+            accessToken: result,
           })
         );
-        toast.success("Login Successful");
-        if (result?.is_member) {
+        if (response.status === 200) {
+          toast.success("Login Successful");
           navigate("/dashboard");
-        } else {
-          navigate("/becomemember");
         }
       } else if (response.status === 400) {
         if (response.data.error === "Invalid credentials") {
@@ -70,7 +66,7 @@ const Login = () => {
       password: values.password,
     };
 
-    fetchData("accounts/login/", loginCredentials);
+    fetchData("login/", loginCredentials);
     setSubmitting(false);
   };
 
