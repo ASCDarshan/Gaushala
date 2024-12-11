@@ -155,8 +155,40 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
         },
         8000
       );
+
       if ([200, 201].includes(response.status)) {
         toast.success("Post Created Successfully");
+
+        setFormData({
+          name: "",
+          tag_number: "",
+          gender: "",
+          breed: "",
+          color: "",
+          date_of_birth: "",
+          rfid_tag: "",
+          weight: "",
+          registration_number: "",
+          purchase_date: "",
+          purchase_price: "",
+          mother: "",
+          father: "",
+          acquisition_type: "",
+          pasture_area: "",
+          shed_number: "",
+          status: "",
+          notes: "",
+          last_vaccination_date: "",
+          next_vaccination_due: "",
+          last_medical_checkup: "",
+          medical_notes: "",
+          date_entered_gaushala: "",
+          block_number: "",
+          last_breeding_date: "",
+          is_pregnant: false,
+          breeding_notes: "",
+          image: null,
+        });
       } else if (response?.status === 400) {
         const errorMessage = await response.json();
         toast.error(errorMessage?.detail || "Please Add Content");
@@ -421,6 +453,7 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
           onChange={handleChange}
           className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
         >
+          <option value="">select Mother</option>
           {parentageData.map((cow) => (
             <option key={cow.id} value={cow.id}>
               {cow.name}
@@ -439,6 +472,7 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
           onChange={handleChange}
           className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
         >
+          <option value="">select Father</option>
           {parentageData.map((cow) => (
             <option key={cow.id} value={cow.id}>
               {cow.name}
