@@ -10,8 +10,10 @@ import {
 } from "@heroicons/react/24/outline";
 import AddCowModal from "../componenets/AddCow/AddCowModal";
 import ajaxCall from "../componenets/helpers/ajaxCall";
+import CowManagement from "../componenets/AddCow/CowManagement";
 
 const DashboardContent = () => {
+  const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [cowsData, setCowsData] = useState([]);
   const [milkProductionData, setMilkProductionData] = useState([]);
@@ -26,7 +28,6 @@ const DashboardContent = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [refreshing, setRefreshing] = useState(false);
   const navigate = useNavigate();
 
   const fetchData = async (url, setData) => {
@@ -36,8 +37,7 @@ const DashboardContent = () => {
         {
           headers: {
             Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Token ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${loginInfo?.accessToken?.access}`,
           },
           method: "GET",
         },
@@ -58,7 +58,6 @@ const DashboardContent = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      setRefreshing(true);
       const cowsDataResponse = await fetchData(
         "cow_management/cows/",
         setCowsData
@@ -72,16 +71,12 @@ const DashboardContent = () => {
         setmedicalRecordsData
       );
 
-      if (
-        cowsDataResponse &&
-        milkProductionResponse &&
-        medicalRecordsResponse
-      ) {
+      if (cowsData && milkProductionData && medicalData) {
         const stats = {
           totalCows: cowsDataResponse.count || 0,
           milkProduction:
             milkProductionResponse?.results?.reduce(
-              (total, record) => total + Number(record.quantity),
+              (total, record) => total + Number(record.amount),
               0
             ) || 0,
           activeMedicalCases:
@@ -107,8 +102,6 @@ const DashboardContent = () => {
     } catch (error) {
       console.error("Error fetching dashboard stats:", error);
       setError("An error occurred while refreshing data");
-    } finally {
-      setRefreshing(false);
     }
   };
 
@@ -119,21 +112,21 @@ const DashboardContent = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex items-center justify-center min-h-screen">
-  //       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
-  //     </div>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+      </div>
+    );
+  }
 
-  // if (error) {
-  //   return (
-  //     <div className="p-6 text-center">
-  //       <div className="bg-error-50 text-error-500 p-4 rounded-lg">{error}</div>
-  //     </div>
-  //   );
-  // }
+  if (error) {
+    return (
+      <div className="p-6 text-center">
+        <div className="bg-error-50 text-error-500 p-4 rounded-lg">{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6">
@@ -142,9 +135,48 @@ const DashboardContent = () => {
         <h1 className="text-2xl font-display font-semibold text-neutral-800">
           Welcome to Gaushala Management System
         </h1>
-        <p className="mt-2 text-neutral-600">
-          Overview of your gaushala's current status and activities.
-        </p>
+        <div className="flex flex-col lg:flex-row justify-between items-start mt-2">
+          <p className="text-neutral-600 mb-4 lg:mb-0">
+            Overview of your gaushala's current status and activities.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="p-4 bg-primary-50 rounded-lg text-primary-600 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2"
+            >
+              <PlusCircleIcon className="w-5 h-5" />
+              Add New Cow
+            </button>
+
+            {/* Add the modal component */}
+            <AddCowModal
+              isOpen={isAddModalOpen}
+              onClose={() => setIsAddModalOpen(false)}
+            />
+
+            <button
+              onClick={() => navigate("/dashboard/milk-production/add")}
+              className="p-4 bg-primary-50 rounded-lg text-primary-600 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2"
+            >
+              <ArrowTrendingUpIcon className="w-5 h-5" />
+              Record Milk Production
+            </button>
+            <button
+              onClick={() => navigate("/dashboard/vaccinations")}
+              className="p-4 bg-primary-50 rounded-lg text-primary-600 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2"
+            >
+              <CalendarDaysIcon className="w-5 h-5" />
+              Schedule Vaccination
+            </button>
+            <button
+              onClick={() => navigate("/dashboard/medical-records/add")}
+              className="p-4 bg-primary-50 rounded-lg text-primary-600 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2"
+            >
+              <ClipboardDocumentListIcon className="w-5 h-5" />
+              Medical Checkup
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Main Stats Grid */}
@@ -212,50 +244,6 @@ const DashboardContent = () => {
 
       {/* Additional Stats & Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Quick Actions */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-neutral-200">
-          <h2 className="text-lg font-semibold text-neutral-800 mb-4">
-            Quick Actions
-          </h2>
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              onClick={() => setIsAddModalOpen(true)}
-              className="p-4 bg-primary-50 rounded-lg text-primary-600 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2"
-            >
-              <PlusCircleIcon className="w-5 h-5" />
-              Add New Cow
-            </button>
-
-            {/* Add the modal component */}
-            <AddCowModal
-              isOpen={isAddModalOpen}
-              onClose={() => setIsAddModalOpen(false)}
-            />
-
-            <button
-              onClick={() => navigate("/dashboard/milk-production/add")}
-              className="p-4 bg-primary-50 rounded-lg text-primary-600 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2"
-            >
-              <ArrowTrendingUpIcon className="w-5 h-5" />
-              Record Milk Production
-            </button>
-            <button
-              onClick={() => navigate("/dashboard/vaccinations")}
-              className="p-4 bg-primary-50 rounded-lg text-primary-600 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2"
-            >
-              <CalendarDaysIcon className="w-5 h-5" />
-              Schedule Vaccination
-            </button>
-            <button
-              onClick={() => navigate("/dashboard/medical-records/add")}
-              className="p-4 bg-primary-50 rounded-lg text-primary-600 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2"
-            >
-              <ClipboardDocumentListIcon className="w-5 h-5" />
-              Medical Checkup
-            </button>
-          </div>
-        </div>
-
         {/* Additional Stats */}
         <div className="bg-white rounded-xl shadow-md p-6 border border-neutral-200">
           <h2 className="text-lg font-semibold text-neutral-800 mb-4">
@@ -306,6 +294,8 @@ const DashboardContent = () => {
           Refresh Data
         </button>
       </div>
+
+      <CowManagement />
     </div>
   );
 };
