@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import AddCowModal from "../componenets/AddCow/AddCowModal";
+import ajaxCall from "../helpers/ajaxCall";
+import { useNavigate } from "react-router-dom";
 
 const CowManagement = () => {
+  const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
+  const navigate = useNavigate();
   const [rowData, setRowData] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [totalCows, setTotalCows] = useState(0);
   const [pageSize] = useState(25);
@@ -140,40 +142,19 @@ const CowManagement = () => {
       width: 100,
     },
     {
-      field: "vaccination_count",
-      headerName: "Vaccinations",
-      sortable: true,
-      width: 120,
-      type: "numericColumn",
-    },
-    {
-      field: "medical_record_count",
-      headerName: "Medical Records",
-      sortable: true,
-      width: 140,
-      type: "numericColumn",
-    },
-    {
-      field: "pregnancy_count",
-      headerName: "Pregnancies",
-      sortable: true,
-      width: 120,
-      type: "numericColumn",
-    },
-    {
       headerName: "Actions",
       pinned: "right",
       sortable: false,
       filter: false,
-      width: 120,
+      width: 100,
       cellRenderer: (params) => (
-        <div className="flex gap-2">
-          <button
+        <div className="flex gap-2 mt-2">
+          {/* <button
             onClick={() => handleEdit(params.data)}
-            className="px-3 py-1 text-xs bg-cornflower text-white rounded hover:bg-cornflower-dark"
+            className="px-3 py-1 text-xs  text-white rounded   bg-sky-500 text-white hover:bg-sky-600"
           >
             Edit
-          </button>
+          </button> */}
           <button
             onClick={() => handleView(params.data)}
             className="px-3 py-1 text-xs bg-gray-500 text-white rounded hover:bg-gray-600"
@@ -185,59 +166,61 @@ const CowManagement = () => {
     },
   ];
 
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const fetchCows = useCallback(async () => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const fetchData = async (url, setData) => {
     try {
-      setLoading(true);
-      const token = localStorage.getItem("token");
-      let url = `https://gocrm.one/gaushala/api/cow_management/cows/?page=${currentPage}&page_size=${pageSize}`;
-      if (searchQuery) {
-        url += `&search=${encodeURIComponent(searchQuery)}`;
-      }
-
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Token ${token}`,
+      const response = await ajaxCall(
+        url,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${loginInfo?.accessToken?.access}`,
+          },
+          method: "GET",
         },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch cows");
+        8000
+      );
+      if (response?.status === 200) {
+        const data = response?.data;
+        setData(data.results);
+        setTotalCows(data.count);
+      } else {
+        console.error("Fetch error:", response);
+        return null;
       }
-
-      const data = await response.json();
-      setRowData(data.results);
-      setTotalCows(data.count);
-    } catch (err) {
-      console.error("Error fetching cows:", err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error("Network error:", error);
+      return null;
     }
-  }, [currentPage, pageSize, searchQuery]);
+  };
 
   useEffect(() => {
-    fetchCows();
-  }, [fetchCows]);
+    let url = `cow_management/cows/?page=${currentPage}&page_size=${pageSize}`;
 
-  const handleEdit = (cow) => {
-    console.log("Edit cow:", cow);
-  };
+    if (searchQuery) {
+      url += `&search=${encodeURIComponent(searchQuery)}`;
+    }
+
+    fetchData(url, setRowData);
+  }, [currentPage, pageSize, searchQuery]);
+
+  // const handleEdit = (cow) => {
+  //   console.log("Edit cow:", cow);
+  // };
 
   const handleView = (cow) => {
-    console.log("View cow:", cow);
+    navigate(`/cowDetails/${cow.id}`);
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setCurrentPage(1); // Reset to first page when searching
-    fetchCows();
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
   };
 
   const totalPages = Math.ceil(totalCows / pageSize);
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Cow Management</h2>
@@ -258,7 +241,7 @@ const CowManagement = () => {
             </div>
             <button
               type="submit"
-              className="px-4 py-2 bg-cornflower text-white rounded-lg hover:bg-cornflower-dark"
+              className="px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600"
             >
               Search
             </button>
@@ -266,14 +249,8 @@ const CowManagement = () => {
 
           <div className="flex gap-2">
             <button
-              className="px-4 py-2 bg-cornflower text-white rounded-lg hover:bg-cornflower-dark"
-              onClick={() => setIsAddModalOpen(true)}
-            >
-              Add New Cow
-            </button>
-            <button
               className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
-              onClick={() => fetchCows()}
+              // onClick={() => fetchCows()}
             >
               Refresh
             </button>
@@ -302,7 +279,7 @@ const CowManagement = () => {
             enableCellTextSelection={true}
             animateRows={true}
             rowSelection="multiple"
-            pagination={false} // We're handling pagination manually
+            pagination={false}
             suppressPaginationPanel={true}
             loadingOverlayComponent={() => (
               <div className="flex items-center justify-center h-full">
@@ -351,11 +328,6 @@ const CowManagement = () => {
           </div>
         </div>
       </div>
-      <AddCowModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        fetchCows={fetchCows}
-      />
     </div>
   );
 };

@@ -30,7 +30,6 @@ const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
   const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
   const [currentStep, setCurrentStep] = useState(1);
   const [parentageData, setParentageData] = useState([]);
-  console.log(parentageData);
   const [formData, setFormData] = useState({
     name: "",
     tag_number: "",
