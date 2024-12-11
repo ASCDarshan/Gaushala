@@ -15,6 +15,7 @@ const CowManagement = () => {
   const [pageSize] = useState(25);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // Complete column definitions with all fields
   const columnDefs = [
@@ -202,7 +203,7 @@ const CowManagement = () => {
     }
 
     fetchData(url, setRowData);
-  }, [currentPage, pageSize, searchQuery]);
+  }, [currentPage, pageSize, searchQuery, refreshKey]);
 
   // const handleEdit = (cow) => {
   //   console.log("Edit cow:", cow);
@@ -220,7 +221,7 @@ const CowManagement = () => {
   const totalPages = Math.ceil(totalCows / pageSize);
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-4">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Cow Management</h2>
@@ -247,14 +248,12 @@ const CowManagement = () => {
             </button>
           </form>
 
-          <div className="flex gap-2">
-            <button
-              className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
-              // onClick={() => fetchCows()}
-            >
-              Refresh
-            </button>
-          </div>
+          <button
+            className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+            onClick={() => setRefreshKey((prev) => prev + 1)}
+          >
+            Refresh
+          </button>
         </div>
       </div>
 
@@ -265,7 +264,7 @@ const CowManagement = () => {
       <div className="bg-white rounded-lg shadow">
         <div
           className="ag-theme-alpine w-full"
-          style={{ height: "calc(100vh - 300px)", minHeight: "500px" }}
+          style={{ height: "calc(100vh - 200vh)", minHeight: "500px" }}
         >
           <AgGridReact
             rowData={rowData}
