@@ -40,9 +40,10 @@ const getRefreshToken = async (refreshToken) => {
       accessToken: response.token.access,
       refreshToken: response.token.refresh,
       user_type: response.token.user_status,
-      userId: response.token.userid,
+      userId: response.token.user_id,
       timeOfLogin: Date.now(),
     };
+
     setToLocalStorage("loginInfo", localObj, true);
   }
 };
