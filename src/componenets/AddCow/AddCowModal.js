@@ -26,7 +26,7 @@ const STEPS = [
   },
 ];
 
-const AddCowModal = ({ isOpen, onClose, fetchCows }) => {
+const AddCowModal = ({ isOpen, onClose }) => {
   const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
   const [currentStep, setCurrentStep] = useState(1);
   const [parentageData, setParentageData] = useState([]);

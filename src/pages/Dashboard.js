@@ -107,7 +107,6 @@ const DashboardContent = () => {
 
   useEffect(() => {
     fetchDashboardStats();
-    // Set up auto-refresh every 5 minutes
     const interval = setInterval(fetchDashboardStats, 300000);
     return () => clearInterval(interval);
   }, []);

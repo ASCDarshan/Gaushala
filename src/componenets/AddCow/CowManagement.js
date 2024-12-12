@@ -4,20 +4,18 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import ajaxCall from "../helpers/ajaxCall";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CowManagement = () => {
   const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
   const navigate = useNavigate();
   const [rowData, setRowData] = useState([]);
-  const [error, setError] = useState(null);
   const [totalCows, setTotalCows] = useState(0);
-  const [pageSize] = useState(25);
+  const [pageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
 
-  // Complete column definitions with all fields
   const columnDefs = [
     {
       field: "tag_number",
@@ -34,7 +32,16 @@ const CowManagement = () => {
       sortable: true,
       filter: true,
       width: 120,
+      cellRenderer: (params) => (
+        <Link
+          to={`/addCowDetails/${params.data.id}`}
+          className="text-blue-500 hover:underline"
+        >
+          {params.data.name}
+        </Link>
+      ),
     },
+
     {
       field: "registration_number",
       headerName: "Registration No.",
@@ -150,12 +157,6 @@ const CowManagement = () => {
       width: 100,
       cellRenderer: (params) => (
         <div className="flex gap-2 mt-2">
-          {/* <button
-            onClick={() => handleEdit(params.data)}
-            className="px-3 py-1 text-xs  text-white rounded   bg-sky-500 text-white hover:bg-sky-600"
-          >
-            Edit
-          </button> */}
           <button
             onClick={() => handleView(params.data)}
             className="px-3 py-1 text-xs bg-gray-500 text-white rounded hover:bg-gray-600"
@@ -167,7 +168,6 @@ const CowManagement = () => {
     },
   ];
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchData = async (url, setData) => {
     try {
       const response = await ajaxCall(
@@ -204,10 +204,6 @@ const CowManagement = () => {
 
     fetchData(url, setRowData);
   }, [currentPage, pageSize, searchQuery, refreshKey]);
-
-  // const handleEdit = (cow) => {
-  //   console.log("Edit cow:", cow);
-  // };
 
   const handleView = (cow) => {
     navigate(`/cowDetails/${cow.id}`);
@@ -256,10 +252,6 @@ const CowManagement = () => {
           </button>
         </div>
       </div>
-
-      {error && (
-        <div className="p-4 bg-red-50 text-red-700 rounded-lg">{error}</div>
-      )}
 
       <div className="bg-white rounded-lg shadow">
         <div
