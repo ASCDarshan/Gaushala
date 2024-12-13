@@ -6,7 +6,7 @@ import Login from "./componenets/Login/Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AddCowDetails from "./componenets/AddCow/AddCowDetails/AddCowDetails";
-import CowDetail from "./componenets/AddCow/CowDetail";
+import CowDetail from "./componenets/Dashboard/CowDetail";
 
 function App() {
   return (

@@ -56,7 +56,7 @@ const AddVaccinationRecord = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white rounded-lg p-6 w-1/2">
         <h2 className="text-xl font-bold mb-4">Add Vaccination Record</h2>
         <form onSubmit={handleSubmit}>

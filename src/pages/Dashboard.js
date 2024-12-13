@@ -8,9 +8,9 @@ import {
   ArrowTrendingUpIcon,
   CalendarDaysIcon,
 } from "@heroicons/react/24/outline";
-import AddCowModal from "../componenets/AddCow/AddCowModal";
+import AddCowModal from "../componenets/Dashboard/AddCowModal";
 import ajaxCall from "../componenets/helpers/ajaxCall";
-import CowManagement from "../componenets/AddCow/CowManagement";
+import CowManagement from "../componenets/Dashboard/CowsTable";
 
 const DashboardContent = () => {
   const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
@@ -154,21 +154,21 @@ const DashboardContent = () => {
             />
 
             <button
-              onClick={() => navigate("/dashboard/milk-production/add")}
+              onClick={() => navigate("")}
               className="p-4 bg-primary-50 rounded-lg text-primary-600 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2"
             >
               <ArrowTrendingUpIcon className="w-5 h-5" />
               Record Milk Production
             </button>
             <button
-              onClick={() => navigate("/dashboard/vaccinations")}
+              onClick={() => navigate("")}
               className="p-4 bg-primary-50 rounded-lg text-primary-600 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2"
             >
               <CalendarDaysIcon className="w-5 h-5" />
               Schedule Vaccination
             </button>
             <button
-              onClick={() => navigate("/dashboard/medical-records/add")}
+              onClick={() => navigate("")}
               className="p-4 bg-primary-50 rounded-lg text-primary-600 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2"
             >
               <ClipboardDocumentListIcon className="w-5 h-5" />
@@ -193,11 +193,6 @@ const DashboardContent = () => {
               <ChartBarIcon className="w-6 h-6 text-primary-500" />
             </div>
           </div>
-          <div className="mt-4">
-            <p className="text-sm text-neutral-600">
-              Healthy: {dashboardStats.healthyCows}
-            </p>
-          </div>
         </div>
 
         {/* Today's Milk Production */}
@@ -215,9 +210,6 @@ const DashboardContent = () => {
               <ArrowTrendingUpIcon className="w-6 h-6 text-primary-500" />
             </div>
           </div>
-          <div className="mt-4 text-sm text-neutral-600">
-            Today's total production
-          </div>
         </div>
 
         {/* Active Medical Cases */}
@@ -233,39 +225,6 @@ const DashboardContent = () => {
             </div>
             <div className="bg-primary-50 p-3 rounded-lg">
               <BeakerIcon className="w-6 h-6 text-primary-500" />
-            </div>
-          </div>
-          <div className="mt-4 text-sm text-neutral-600">
-            Active cases requiring attention
-          </div>
-        </div>
-      </div>
-
-      {/* Additional Stats & Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Additional Stats */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-neutral-200">
-          <h2 className="text-lg font-semibold text-neutral-800 mb-4">
-            Status Overview
-          </h2>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center p-3 bg-neutral-50 rounded-lg">
-              <span className="text-neutral-600">Pregnant Cows</span>
-              <span className="font-semibold text-primary-600">
-                {dashboardStats.pregnantCows}
-              </span>
-            </div>
-            <div className="flex justify-between items-center p-3 bg-neutral-50 rounded-lg">
-              <span className="text-neutral-600">Upcoming Vaccinations</span>
-              <span className="font-semibold text-primary-600">
-                {dashboardStats.upcomingVaccinations}
-              </span>
-            </div>
-            <div className="flex justify-between items-center p-3 bg-neutral-50 rounded-lg">
-              <span className="text-neutral-600">Healthy Cows</span>
-              <span className="font-semibold text-primary-600">
-                {dashboardStats.healthyCows}
-              </span>
             </div>
           </div>
         </div>
