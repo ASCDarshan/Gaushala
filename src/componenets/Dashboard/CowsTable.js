@@ -6,7 +6,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import ajaxCall from "../helpers/ajaxCall";
 import { Link, useNavigate } from "react-router-dom";
 
-const CowManagement = () => {
+const CowsTable = () => {
   const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
   const navigate = useNavigate();
   const [rowData, setRowData] = useState([]);
@@ -17,15 +17,15 @@ const CowManagement = () => {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const columnDefs = [
-    {
-      field: "tag_number",
-      headerName: "Tag Number",
-      sortable: true,
-      filter: true,
-      pinned: "left",
-      width: 120,
-      cellClass: "font-medium",
-    },
+    // {
+    //   field: "tag_number",
+    //   headerName: "Tag Number",
+    //   sortable: true,
+    //   filter: true,
+    //   pinned: "left",
+    //   width: 120,
+    //   cellClass: "font-medium",
+    // },
     {
       field: "name",
       headerName: "Name",
@@ -323,4 +323,4 @@ const CowManagement = () => {
   );
 };
 
-export default CowManagement;
+export default CowsTable;

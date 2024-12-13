@@ -110,10 +110,18 @@ const CowDetail = () => {
 
       {/* Third Row of Details */}
       <div className="flex flex-wrap justify-center">
-        <DetailCard title="Date of Birth" value={selectedCow.date_of_birth} />
+        <DetailCard
+          title="Date of Birth"
+          value={new Date(selectedCow.date_of_birth).toLocaleDateString(
+            "en-GB"
+          )}
+        />
+
         <DetailCard
           title="Entered Gaushala"
-          value={selectedCow.date_entered_gaushala}
+          value={new Date(selectedCow.date_entered_gaushala).toLocaleDateString(
+            "en-GB"
+          )}
         />
         <DetailCard
           title="Pregnancy Count"
