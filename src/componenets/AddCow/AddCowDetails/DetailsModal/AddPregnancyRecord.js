@@ -22,9 +22,19 @@ const AddPregnancyRecord = ({ isOpen, onClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
+    setFormData((prevData) => {
+      const updatedData = { ...prevData, [name]: value };
+
+      if (name === "start_date" && value) {
+        const startDate = new Date(value);
+        const expectedCalvingDate = new Date(startDate);
+        expectedCalvingDate.setDate(expectedCalvingDate.getDate() + 280);
+        updatedData.expected_calving_date = expectedCalvingDate
+          .toISOString()
+          .split("T")[0];
+      }
+
+      return updatedData;
     });
   };
 
@@ -86,6 +96,7 @@ const AddPregnancyRecord = ({ isOpen, onClose }) => {
                 value={formData.expected_calving_date}
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
+                readOnly
               />
             </div>
             <div>
@@ -108,13 +119,14 @@ const AddPregnancyRecord = ({ isOpen, onClose }) => {
               <select
                 name="result"
                 onChange={handleChange}
+                value={formData.result}
                 className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
               >
-                <option value="">select Result </option>
+                <option value="">Select Result</option>
                 <option value="successful">Successful</option>
-                <option value="miscarage">Miscarriage</option>
+                <option value="miscarriage">Miscarriage</option>
                 <option value="abortion">Abortion</option>
-                <option value="stiilbirth">Stillbirth</option>
+                <option value="stillbirth">Stillbirth</option>
                 <option value="unknown">Unknown</option>
               </select>
             </div>

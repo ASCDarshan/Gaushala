@@ -60,6 +60,16 @@ const CowsTable = () => {
       ),
     },
     {
+      field: "is_pregnant",
+      headerName: "Pregnancy Status",
+      sortable: true,
+      filter: true,
+      width: 100,
+      cellRenderer: (params) => {
+        return params.value ? "Pregnant" : "-";
+      },
+    },
+    {
       field: "gender",
       headerName: "Gender",
       sortable: true,
@@ -139,23 +149,6 @@ const CowsTable = () => {
       filter: true,
       width: 100,
     },
-    {
-      headerName: "Actions",
-      pinned: "right",
-      sortable: false,
-      filter: false,
-      width: 100,
-      cellRenderer: (params) => (
-        <div className="flex gap-2 mt-2">
-          <button
-            onClick={() => handleView(params.data)}
-            className="px-3 py-1 text-xs bg-gray-500 text-white rounded hover:bg-gray-600"
-          >
-            View
-          </button>
-        </div>
-      ),
-    },
   ];
 
   const fetchData = async (url, setData) => {
@@ -194,10 +187,6 @@ const CowsTable = () => {
 
     fetchData(url, setRowData);
   }, [currentPage, pageSize, searchQuery, refreshKey]);
-
-  const handleView = (cow) => {
-    navigate(`/cowDetails/${cow.id}`);
-  };
 
   const handleSearch = (query) => {
     setSearchQuery(query);
