@@ -73,7 +73,7 @@ const AddCowDetails = () => {
     fetchData(`medicalrecord/${cowId}/`, "medical_records");
     fetchData(`pregnancyrecord/${cowId}/`, "pregnancy_records");
     fetchData(`vaccination/${cowId}/`, "vaccinations");
-  }, []);
+  }, [cowId]);
 
   const handleMilkopen = () => {
     setIsMilkModalOpen(true);
@@ -137,7 +137,7 @@ const AddCowDetails = () => {
 
   useEffect(() => {
     fetchCowName(`cow/${cowId}/`, setCowName);
-  }, []);
+  }, [cowId]);
 
   const handleBack = () => {
     navigate("/dashboard");

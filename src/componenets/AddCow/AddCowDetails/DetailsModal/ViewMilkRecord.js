@@ -24,10 +24,9 @@ const ViewMilkRecord = ({ onClose, data }) => {
                   <th className="border-b pb-3 px-4 text-lg">Date</th>
                   <th className="border-b pb-3 px-4 text-lg">Milk Quantity</th>
                   <th className="border-b pb-3 px-4 text-lg">Milking Time</th>
+                  <th className="border-b pb-3 px-4 text-lg">Shed Number</th>
                   <th className="border-b pb-3 px-4 text-lg">Fat Content</th>
-                  <th className="border-b pb-3 px-4 text-lg">
-                    Price Per Liter
-                  </th>
+                  <th className="border-b pb-3 px-4 text-lg">Price / Liter</th>
                   <th className="border-b pb-3 px-4 text-lg">Total Price</th>
                   <th className="border-b pb-3 px-4 text-lg">Notes</th>
                 </tr>
@@ -45,6 +44,9 @@ const ViewMilkRecord = ({ onClose, data }) => {
                     </td>
                     <td className="py-3 px-4 border-b">
                       {record.milking_time}
+                    </td>
+                    <td className="py-3 px-4 border-b">
+                      {record.shed_number ? record.shed_number : "-"}
                     </td>
                     <td className="py-3 px-4 border-b">
                       {record.fat_content ? record.fat_content : "-"}

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ChartBarIcon,
-  BeakerIcon,
   ClipboardDocumentListIcon,
   PlusCircleIcon,
   ArrowTrendingUpIcon,
@@ -129,7 +128,6 @@ const DashboardContent = () => {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Welcome Section */}
       <div className="bg-white rounded-xl shadow-md p-6 border border-neutral-200">
         <h1 className="text-2xl font-display font-semibold text-neutral-800">
           Welcome to Gaushala Management System
@@ -147,7 +145,6 @@ const DashboardContent = () => {
               Add New Cow
             </button>
 
-            {/* Add the modal component */}
             <AddCowModal
               isOpen={isAddModalOpen}
               onClose={() => setIsAddModalOpen(false)}
@@ -176,61 +173,58 @@ const DashboardContent = () => {
             </button>
           </div>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+          <div className="bg-white rounded-xl shadow-md p-6 border border-neutral-200 hover:shadow-lg transition-shadow duration-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-neutral-600">
+                  Total Cows
+                </p>
+                <p className="mt-2 text-3xl font-bold text-primary-600">
+                  {dashboardStats.totalCows}
+                </p>
+              </div>
+              <div className="bg-primary-50 p-3 rounded-lg">
+                <ChartBarIcon className="w-6 h-6 text-primary-500" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-md p-6 border border-neutral-200 hover:shadow-lg transition-shadow duration-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-neutral-600">
+                  Milk Production
+                </p>
+                <p className="mt-2 text-3xl font-bold text-green-600">
+                  {dashboardStats.milkProduction} L
+                </p>
+              </div>
+              <div className="bg-green-50 p-3 rounded-lg">
+                <ArrowTrendingUpIcon className="w-6 h-6 text-green-500" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-md p-6 border border-neutral-200 hover:shadow-lg transition-shadow duration-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-neutral-600">
+                  Medical Cases
+                </p>
+                <p className="mt-2 text-3xl font-bold text-red-600">
+                  {dashboardStats.activeMedicalCases}
+                </p>
+              </div>
+              <div className="bg-red-50 p-3 rounded-lg">
+                <CalendarDaysIcon className="w-6 h-6 text-red-500" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Total Cows */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-neutral-200 hover:shadow-lg transition-shadow duration-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-neutral-600">Total Cows</p>
-              <p className="mt-2 text-3xl font-bold text-primary-600">
-                {dashboardStats.totalCows}
-              </p>
-            </div>
-            <div className="bg-primary-50 p-3 rounded-lg">
-              <ChartBarIcon className="w-6 h-6 text-primary-500" />
-            </div>
-          </div>
-        </div>
-
-        {/* Today's Milk Production */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-neutral-200 hover:shadow-lg transition-shadow duration-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-neutral-600">
-                Milk Production
-              </p>
-              <p className="mt-2 text-3xl font-bold text-primary-600">
-                {dashboardStats.milkProduction} L
-              </p>
-            </div>
-            <div className="bg-primary-50 p-3 rounded-lg">
-              <ArrowTrendingUpIcon className="w-6 h-6 text-primary-500" />
-            </div>
-          </div>
-        </div>
-
-        {/* Active Medical Cases */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-neutral-200 hover:shadow-lg transition-shadow duration-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-neutral-600">
-                Medical Cases
-              </p>
-              <p className="mt-2 text-3xl font-bold text-primary-600">
-                {dashboardStats.activeMedicalCases}
-              </p>
-            </div>
-            <div className="bg-primary-50 p-3 rounded-lg">
-              <BeakerIcon className="w-6 h-6 text-primary-500" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Refresh Button */}
       <div className="flex justify-end">
         <button
           onClick={fetchDashboardStats}

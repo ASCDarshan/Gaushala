@@ -718,7 +718,6 @@ const AddCowModal = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-start overflow-y-auto z-50">
       <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-4xl m-4 p-6">
-        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
@@ -726,14 +725,12 @@ const AddCowModal = ({ isOpen, onClose }) => {
           <XMarkIcon className="h-6 w-6" />
         </button>
 
-        {/* Form content */}
         <div className="mt-4">
           {renderStepIndicator()}
 
           <form className="mt-8 space-y-6">
             {renderStepContent()}
 
-            {/* Navigation buttons */}
             <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
               <button
                 type="button"
