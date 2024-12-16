@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ajaxCall from "../../../helpers/ajaxCall";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
@@ -6,13 +6,19 @@ import { useParams } from "react-router-dom";
 const AddMilkModal = ({ isOpen, onClose }) => {
   const { cowId } = useParams();
   const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
+
+  const getCurrentMilkingTime = () => {
+    const currentHour = new Date().getHours();
+    return currentHour >= 4 && currentHour < 12 ? "morning" : "evening";
+  };
+
   const initialData = {
     cow_id: cowId,
     date: new Date().toISOString().split("T")[0],
-    shed_number: null,
+    shed_number: "",
     amount: "",
-    milking_time: "",
-    fat_content: "",
+    milking_time: getCurrentMilkingTime(),
+    fat_content: "4",
     notes: "",
     price_per_liter: "",
     total_price: "",
@@ -92,16 +98,29 @@ const AddMilkModal = ({ isOpen, onClose }) => {
               />
             </div>
 
+            {/* <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Shed Number
+              </label>
+              <input
+                type="number"
+                name="shed_number"
+                value={formData.shed_number}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
+              />
+            </div> */}
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Milking Time
               </label>
               <select
                 name="milking_time"
+                value={formData.milking_time}
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-blue-500 focus:ring-1 transition duration-150"
               >
-                <option value="">select Timing</option>
                 <option value="morning">Morning</option>
                 <option value="evening">Evening</option>
               </select>

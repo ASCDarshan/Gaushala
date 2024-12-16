@@ -17,15 +17,6 @@ const CowsTable = () => {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const columnDefs = [
-    // {
-    //   field: "tag_number",
-    //   headerName: "Tag Number",
-    //   sortable: true,
-    //   filter: true,
-    //   pinned: "left",
-    //   width: 120,
-    //   cellClass: "font-medium",
-    // },
     {
       field: "name",
       headerName: "Name",
@@ -41,7 +32,6 @@ const CowsTable = () => {
         </Link>
       ),
     },
-
     {
       field: "registration_number",
       headerName: "Registration No.",
