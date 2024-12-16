@@ -149,28 +149,6 @@ const DashboardContent = () => {
               isOpen={isAddModalOpen}
               onClose={() => setIsAddModalOpen(false)}
             />
-
-            <button
-              onClick={() => navigate("")}
-              className="p-4 bg-primary-50 rounded-lg text-primary-600 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2"
-            >
-              <ArrowTrendingUpIcon className="w-5 h-5" />
-              Record Milk Production
-            </button>
-            <button
-              onClick={() => navigate("")}
-              className="p-4 bg-primary-50 rounded-lg text-primary-600 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2"
-            >
-              <CalendarDaysIcon className="w-5 h-5" />
-              Schedule Vaccination
-            </button>
-            <button
-              onClick={() => navigate("")}
-              className="p-4 bg-primary-50 rounded-lg text-primary-600 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2"
-            >
-              <ClipboardDocumentListIcon className="w-5 h-5" />
-              Medical Checkup
-            </button>
           </div>
         </div>
 
