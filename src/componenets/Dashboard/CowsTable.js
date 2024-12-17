@@ -149,9 +149,11 @@ const CowsTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = async (url, setData) => {
     try {
+      setIsLoading(true);
       const response = await ajaxCall(
         url,
         {
@@ -174,6 +176,8 @@ const CowsTable = () => {
     } catch (error) {
       console.error("Network error:", error);
       return null;
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -190,6 +194,10 @@ const CowsTable = () => {
   const handleSearch = (query) => {
     setSearchQuery(query);
     setCurrentPage(1);
+  };
+
+  const handleRefresh = () => {
+    setRefreshKey((prev) => prev + 1);
   };
 
   const totalPages = Math.ceil(totalCows / pageSize);
@@ -223,9 +231,13 @@ const CowsTable = () => {
           </form>
 
           <button
-            className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
-            onClick={() => setRefreshKey((prev) => prev + 1)}
+            className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 flex items-center justify-center"
+            onClick={handleRefresh}
+            disabled={isLoading}
           >
+            {isLoading ? (
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+            ) : null}
             Refresh
           </button>
         </div>
@@ -250,6 +262,7 @@ const CowsTable = () => {
             rowSelection="multiple"
             pagination={false}
             suppressPaginationPanel={true}
+            loading={isLoading}
             loadingOverlayComponent={() => (
               <div className="flex items-center justify-center h-full">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cornflower"></div>
