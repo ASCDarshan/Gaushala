@@ -24,13 +24,14 @@ const AddCowDetails = () => {
   const navigate = useNavigate();
   const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
   const [activeModal, setActiveModal] = useState(null);
-  const closeModal = () => setActiveModal(null);
 
   const [isMilkModalOpen, setIsMilkModalOpen] = useState(false);
   const [isMedicalModalOpen, setIsMedicalModalOpen] = useState(false);
   const [isPregnancyModalOpen, setIsPregnancyModalOpen] = useState(false);
   const [isVaccinationModalOpen, setIsVaccinationModalOpen] = useState(false);
   const [cowName, setCowName] = useState([]);
+  const [count, setCount] = useState(0);
+  const closeModal = () => setActiveModal(null);
 
   const [data, setData] = useState({
     milkData: [],
@@ -38,6 +39,10 @@ const AddCowDetails = () => {
     pregnancyData: [],
     vaccinationData: [],
   });
+
+  const refreshData = () => {
+    setCount((prev) => prev + 1);
+  };
 
   const fetchData = async (endpoint, key) => {
     try {
@@ -73,7 +78,7 @@ const AddCowDetails = () => {
     fetchData(`medicalrecord/${cowId}/`, "medical_records");
     fetchData(`pregnancyrecord/${cowId}/`, "pregnancy_records");
     fetchData(`vaccination/${cowId}/`, "vaccinations");
-  }, [cowId]);
+  }, [cowId, count]);
 
   const handleMilkopen = () => {
     setIsMilkModalOpen(true);
@@ -154,7 +159,6 @@ const AddCowDetails = () => {
       </button>
 
       <div className="h-4"></div>
-      {/* Welcome Section */}
       <div className="bg-white rounded-xl shadow-md p-6 border border-neutral-200 mt-16">
         <div className="flex flex-col lg:flex-row justify-between items-start mt-2">
           <h1 className="text-2xl font-display font-semibold text-neutral-800 align-middle mt-2">
@@ -172,6 +176,7 @@ const AddCowDetails = () => {
             <AddMilkModal
               isOpen={activeModal === "milk"}
               onClose={closeModal}
+              onSubmitSuccess={refreshData}
             />
 
             <button
@@ -185,6 +190,7 @@ const AddCowDetails = () => {
             <AddMedicalRecord
               isOpen={activeModal === "medical"}
               onClose={closeModal}
+              onSubmitSuccess={refreshData}
             />
 
             <button
@@ -198,6 +204,7 @@ const AddCowDetails = () => {
             <AddPregnancyRecord
               isOpen={activeModal === "pregnancy"}
               onClose={closeModal}
+              onSubmitSuccess={refreshData}
             />
 
             <button
@@ -211,12 +218,12 @@ const AddCowDetails = () => {
             <AddVaccinationRecord
               isOpen={activeModal === "vaccination"}
               onClose={closeModal}
+              onSubmitSuccess={refreshData}
             />
           </div>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 ">
-        {/* Total Cows */}
         <div className="bg-white rounded-xl shadow-md p-6 border border-neutral-200 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center justify-between">
             <div>

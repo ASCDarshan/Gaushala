@@ -7,22 +7,26 @@ const STEPS = [
   {
     id: 1,
     title: "Basic Details",
-    description: "Enter basic information about the cow",
+    description:
+      "Enter basic information about the cow, including identity and physical attributes.",
   },
   {
     id: 2,
-    title: "Location",
-    description: "Specify where the cow is housed",
+    title: "Acquisition & Location",
+    description:
+      "Provide acquisition details and specify the cow's housing location.",
   },
   {
     id: 3,
-    title: "Health",
-    description: "Add health and medical details",
+    title: "Health Details",
+    description:
+      "Add vaccination dates, medical checkup history, and related health notes.",
   },
   {
     id: 4,
-    title: "Additional Info",
-    description: "Add any additional information",
+    title: "Breeding & Additional Info",
+    description:
+      "Enter breeding details and other relevant additional information.",
   },
 ];
 
@@ -78,7 +82,7 @@ const AddCowModal = ({ isOpen, onClose }) => {
         8000
       );
       if (response?.status === 200) {
-        setData(response?.data?.results || []);
+        setData(response?.data || []);
         return response.data;
       } else {
         console.error("Fetch error:", response);
@@ -91,7 +95,7 @@ const AddCowModal = ({ isOpen, onClose }) => {
   };
 
   useEffect(() => {
-    fetchparentageData("cow_management/cows/", setParentageData);
+    fetchparentageData("cowpage/", setParentageData);
   }, []);
 
   const handleChange = (e) => {

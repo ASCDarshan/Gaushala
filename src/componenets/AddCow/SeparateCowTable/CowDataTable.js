@@ -12,6 +12,16 @@ const columnDefs = [
     width: 120,
   },
   {
+    field: "is_pregnant",
+    headerName: "Pregnancy Status",
+    sortable: true,
+    filter: true,
+    width: 200,
+    cellRenderer: (params) => {
+      return params.value ? "Pregnant" : "-";
+    },
+  },
+  {
     field: "tag_number",
     headerName: "Tag Number",
     sortable: true,

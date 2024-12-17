@@ -3,7 +3,7 @@ import ajaxCall from "../../../helpers/ajaxCall";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 
-const AddVaccinationRecord = ({ isOpen, onClose }) => {
+const AddVaccinationRecord = ({ isOpen, onClose, onSubmitSuccess }) => {
   const { cowId } = useParams();
   const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
   const initialData = {
@@ -15,8 +15,7 @@ const AddVaccinationRecord = ({ isOpen, onClose }) => {
   };
 
   const [formData, setFormData] = useState(initialData);
-
-  if (!isOpen) return null;
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,6 +27,7 @@ const AddVaccinationRecord = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await ajaxCall(
@@ -45,6 +45,7 @@ const AddVaccinationRecord = ({ isOpen, onClose }) => {
 
       if ([200, 201].includes(response.status)) {
         toast.success("Vaccination record added successfully.");
+        onSubmitSuccess();
         setFormData(initialData);
         onClose();
       } else {
@@ -52,8 +53,12 @@ const AddVaccinationRecord = ({ isOpen, onClose }) => {
       }
     } catch (error) {
       toast.error("Some problem occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -124,8 +129,10 @@ const AddVaccinationRecord = ({ isOpen, onClose }) => {
             <button
               type="submit"
               className="px-4 py-2 bg-primary-600 text-white rounded-md"
+              disabled={loading} // Disable button when loading
             >
-              Save
+              {loading ? "Loading..." : "Save"}{" "}
+              {/* Replace text when loading */}
             </button>
           </div>
         </form>

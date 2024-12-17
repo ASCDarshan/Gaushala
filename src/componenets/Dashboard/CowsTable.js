@@ -4,152 +4,151 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import ajaxCall from "../helpers/ajaxCall";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+const columnDefs = [
+  {
+    field: "name",
+    headerName: "Name",
+    sortable: true,
+    filter: true,
+    width: 120,
+    cellRenderer: (params) => (
+      <Link
+        to={`/addCowDetails/${params.data.id}`}
+        className="text-blue-500 hover:underline"
+      >
+        {params.data.name}
+      </Link>
+    ),
+  },
+  {
+    field: "registration_number",
+    headerName: "Registration No.",
+    sortable: true,
+    filter: true,
+    width: 140,
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    sortable: true,
+    filter: true,
+    width: 120,
+    cellRenderer: (params) => (
+      <span
+        className={`px-2 py-1 rounded-full text-xs font-medium ${
+          params.value === "healthy"
+            ? "bg-green-100 text-green-800"
+            : params.value === "sick"
+            ? "bg-red-100 text-red-800"
+            : "bg-yellow-100 text-yellow-800"
+        }`}
+      >
+        {params.value?.charAt(0).toUpperCase() + params.value?.slice(1)}
+      </span>
+    ),
+  },
+  {
+    field: "is_pregnant",
+    headerName: "Pregnancy Status",
+    sortable: true,
+    filter: true,
+    width: 200,
+    cellRenderer: (params) => {
+      return params.value ? "Pregnant" : "-";
+    },
+  },
+  {
+    field: "gender",
+    headerName: "Gender",
+    sortable: true,
+    filter: true,
+    width: 100,
+    valueFormatter: (params) => (params.value === "F" ? "Female" : "Male"),
+  },
+  {
+    field: "breed",
+    headerName: "Breed",
+    sortable: true,
+    filter: true,
+    width: 120,
+  },
+  {
+    field: "color",
+    headerName: "Color",
+    sortable: true,
+    filter: true,
+    width: 100,
+  },
+  {
+    field: "weight",
+    headerName: "Weight (kg)",
+    sortable: true,
+    filter: true,
+    width: 120,
+    valueFormatter: (params) => (params.value ? `${params.value} kg` : ""),
+  },
+  {
+    field: "date_of_birth",
+    headerName: "Date of Birth",
+    sortable: true,
+    filter: true,
+    width: 130,
+    valueFormatter: (params) =>
+      params.value ? new Date(params.value).toLocaleDateString() : "",
+  },
+  {
+    field: "acquisition_type",
+    headerName: "Acquisition",
+    sortable: true,
+    filter: true,
+    width: 120,
+    valueFormatter: (params) =>
+      params.value?.charAt(0).toUpperCase() + params.value?.slice(1),
+  },
+  {
+    field: "purchase_date",
+    headerName: "Purchase Date",
+    sortable: true,
+    filter: true,
+    width: 130,
+    valueFormatter: (params) =>
+      params.value ? new Date(params.value).toLocaleDateString() : "",
+  },
+  {
+    field: "date_entered_gaushala",
+    headerName: "Entry Date",
+    sortable: true,
+    filter: true,
+    width: 130,
+    valueFormatter: (params) =>
+      params.value ? new Date(params.value).toLocaleDateString() : "",
+  },
+  {
+    field: "shed_number",
+    headerName: "Shed",
+    sortable: true,
+    filter: true,
+    width: 100,
+  },
+  {
+    field: "block_number",
+    headerName: "Block",
+    sortable: true,
+    filter: true,
+    width: 100,
+  },
+];
 
 const CowsTable = () => {
   const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
-  const navigate = useNavigate();
   const [rowData, setRowData] = useState([]);
   const [totalCows, setTotalCows] = useState(0);
   const [pageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
-
-  const columnDefs = [
-    {
-      field: "name",
-      headerName: "Name",
-      sortable: true,
-      filter: true,
-      width: 120,
-      cellRenderer: (params) => (
-        <Link
-          to={`/addCowDetails/${params.data.id}`}
-          className="text-blue-500 hover:underline"
-        >
-          {params.data.name}
-        </Link>
-      ),
-    },
-    {
-      field: "registration_number",
-      headerName: "Registration No.",
-      sortable: true,
-      filter: true,
-      width: 140,
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      sortable: true,
-      filter: true,
-      width: 120,
-      cellRenderer: (params) => (
-        <span
-          className={`px-2 py-1 rounded-full text-xs font-medium ${
-            params.value === "healthy"
-              ? "bg-green-100 text-green-800"
-              : params.value === "sick"
-              ? "bg-red-100 text-red-800"
-              : "bg-yellow-100 text-yellow-800"
-          }`}
-        >
-          {params.value?.charAt(0).toUpperCase() + params.value?.slice(1)}
-        </span>
-      ),
-    },
-    {
-      field: "is_pregnant",
-      headerName: "Pregnancy Status",
-      sortable: true,
-      filter: true,
-      width: 100,
-      cellRenderer: (params) => {
-        return params.value ? "Pregnant" : "-";
-      },
-    },
-    {
-      field: "gender",
-      headerName: "Gender",
-      sortable: true,
-      filter: true,
-      width: 100,
-      valueFormatter: (params) => (params.value === "F" ? "Female" : "Male"),
-    },
-    {
-      field: "breed",
-      headerName: "Breed",
-      sortable: true,
-      filter: true,
-      width: 120,
-    },
-    {
-      field: "color",
-      headerName: "Color",
-      sortable: true,
-      filter: true,
-      width: 100,
-    },
-    {
-      field: "weight",
-      headerName: "Weight (kg)",
-      sortable: true,
-      filter: true,
-      width: 120,
-      valueFormatter: (params) => (params.value ? `${params.value} kg` : ""),
-    },
-    {
-      field: "date_of_birth",
-      headerName: "Date of Birth",
-      sortable: true,
-      filter: true,
-      width: 130,
-      valueFormatter: (params) =>
-        params.value ? new Date(params.value).toLocaleDateString() : "",
-    },
-    {
-      field: "acquisition_type",
-      headerName: "Acquisition",
-      sortable: true,
-      filter: true,
-      width: 120,
-      valueFormatter: (params) =>
-        params.value?.charAt(0).toUpperCase() + params.value?.slice(1),
-    },
-    {
-      field: "purchase_date",
-      headerName: "Purchase Date",
-      sortable: true,
-      filter: true,
-      width: 130,
-      valueFormatter: (params) =>
-        params.value ? new Date(params.value).toLocaleDateString() : "",
-    },
-    {
-      field: "date_entered_gaushala",
-      headerName: "Entry Date",
-      sortable: true,
-      filter: true,
-      width: 130,
-      valueFormatter: (params) =>
-        params.value ? new Date(params.value).toLocaleDateString() : "",
-    },
-    {
-      field: "shed_number",
-      headerName: "Shed",
-      sortable: true,
-      filter: true,
-      width: 100,
-    },
-    {
-      field: "block_number",
-      headerName: "Block",
-      sortable: true,
-      filter: true,
-      width: 100,
-    },
-  ];
 
   const fetchData = async (url, setData) => {
     try {
