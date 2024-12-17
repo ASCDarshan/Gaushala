@@ -6,7 +6,6 @@ import Login from "./componenets/Login/Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AddCowDetails from "./componenets/AddCow/AddCowDetails/AddCowDetails";
-import CowDetail from "./componenets/Dashboard/CowDetail";
 
 function App() {
   return (
@@ -16,7 +15,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/cowDetails/:cowId" element={<CowDetail />} />
           <Route path="/addCowDetails/:cowId" element={<AddCowDetails />} />
         </Routes>
       </Router>

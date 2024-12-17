@@ -3,7 +3,7 @@ import ajaxCall from "../../../helpers/ajaxCall";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 
-const AddPregnancyRecord = ({ isOpen, onClose }) => {
+const AddPregnancyRecord = ({ isOpen, onClose, onSubmitSuccess }) => {
   const { cowId } = useParams();
   const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
   const initialData = {
@@ -17,8 +17,7 @@ const AddPregnancyRecord = ({ isOpen, onClose }) => {
   };
 
   const [formData, setFormData] = useState(initialData);
-
-  if (!isOpen) return null;
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,6 +38,7 @@ const AddPregnancyRecord = ({ isOpen, onClose }) => {
   };
 
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
 
     try {
@@ -57,6 +57,7 @@ const AddPregnancyRecord = ({ isOpen, onClose }) => {
 
       if ([200, 201].includes(response.status)) {
         toast.success("Pregnancy record added successfully.");
+        onSubmitSuccess();
         setFormData(initialData);
         onClose();
       } else {
@@ -64,8 +65,12 @@ const AddPregnancyRecord = ({ isOpen, onClose }) => {
       }
     } catch (error) {
       toast.error("Some problem occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -156,8 +161,9 @@ const AddPregnancyRecord = ({ isOpen, onClose }) => {
             <button
               type="submit"
               className="px-4 py-2 bg-primary-600 text-white rounded-md"
+              disabled={loading}
             >
-              Save
+              {loading ? "Loading..." : "Save"}{" "}
             </button>
           </div>
         </form>

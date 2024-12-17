@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   ChartBarIcon,
-  ClipboardDocumentListIcon,
   PlusCircleIcon,
   ArrowTrendingUpIcon,
   CalendarDaysIcon,
@@ -27,7 +25,6 @@ const DashboardContent = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   const fetchData = async (url, setData) => {
     try {
