@@ -126,11 +126,11 @@ const DashboardContent = () => {
   return (
     <div className="p-6 space-y-6">
       <div className="bg-white rounded-xl shadow-md p-6 border border-neutral-200">
-        <h1 className="text-2xl font-display font-semibold text-neutral-800">
+        <h1 className="text-2xl font-display font-bold text-gray-900">
           Welcome to Gaushala Management System
         </h1>
         <div className="flex flex-col lg:flex-row justify-between items-start mt-2">
-          <p className="text-neutral-600 mb-4 lg:mb-0">
+          <p className="text-primary-600 mb-4 lg:mb-0">
             Overview of your gaushala's current status and activities.
           </p>
           <div className="flex flex-wrap gap-4">
